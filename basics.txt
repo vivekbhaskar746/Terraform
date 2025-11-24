@@ -1,0 +1,39 @@
+Terraform
+
+Quick Answer:
+Terraform is an Infrastructure as Code (IaC) tool that lets you define, provision, and manage infrastructure using simple configuration files. It works by writing code in HCL (HashiCorp Configuration Language), running terraform plan to preview changes, and terraform apply to execute them. In interviews, expect questions on Terraform basics, workflow, state management, providers, and modules
+
+
+🌍 Basic Structure of Terraform
+- Configuration Files (.tf):
+- Written in HCL or JSON.
+- Define resources (servers, networks, databases).
+- Providers:
+- Plugins that let Terraform interact with cloud platforms (AWS, Azure, GCP).
+- Resources:
+- The actual infrastructure objects (e.g., EC2 instance, S3 bucket).
+- Variables:
+- Input values to make configurations reusable.
+- Outputs:
+- Values returned after execution (e.g., IP address of a server).
+- State File (terraform.tfstate):
+- Tracks current infrastructure and maps it to configuration.
+- Modules:
+- Reusable groups of resources packaged together.
+
+
+⚙️ How Terraform Works
+- Write: Define infrastructure in .tf files.
+- Initialize: Run terraform init to set up providers.
+- Plan: Run terraform plan to preview changes.
+- Apply: Run terraform apply to create/update infrastructure.
+- Destroy: Run terraform destroy to remove infrastructure.
+Terraform uses a declarative approach: you describe the desired state, and Terraform figures out how to achieve it.
+
+
+ Basic Concepts
+- Idempotency: Running the same configuration multiple times results in the same infrastructure.
+- Immutable Infrastructure: Instead of modifying existing resources, Terraform often replaces them.
+- Execution Plan: Shows what Terraform will do before making changes.
+- State Management: Ensures Terraform knows the current status of resources.
+- Provisioners: Allow running scripts on resources after creation.
