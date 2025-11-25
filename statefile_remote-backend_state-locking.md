@@ -78,53 +78,53 @@ Simplified but realistic structure:
 
 {
 
-&nbsp; "version": 4,
+  "version": 4,
 
-&nbsp; "terraform\_version": "1.8.2",
+  "terraform\_version": "1.8.2",
 
-&nbsp; "serial": 27,
+  "serial": 27,
 
-&nbsp; "lineage": "fd3e8f46-12b...",
+  "lineage": "fd3e8f46-12b...",
 
-&nbsp; "resources": \[
+  "resources": \[
 
-&nbsp;   {
+    {
 
-&nbsp;     "module": "module.network",
+      "module": "module.network",
 
-&nbsp;     "mode": "managed",
+      "mode": "managed",
 
-&nbsp;     "type": "aws\_security\_group",
+      "type": "aws\_security\_group",
 
-&nbsp;     "name": "main",
+      "name": "main",
 
-&nbsp;     "provider": "provider\[registry.terraform.io/hashicorp/aws]",
+      "provider": "provider\[registry.terraform.io/hashicorp/aws]",
 
-&nbsp;     "instances": \[
+      "instances": \[
 
-&nbsp;       {
+        {
 
-&nbsp;         "schema\_version": 2,
+          "schema\_version": 2,
 
-&nbsp;         "attributes": {
+          "attributes": {
 
-&nbsp;           "id": "sg-12345",
+            "id": "sg-12345",
 
-&nbsp;           "description": "Main SG",
+            "description": "Main SG",
 
-&nbsp;           "ingress": \[...],
+            "ingress": \[...],
 
-&nbsp;           "egress": \[...]
+            "egress": \[...]
 
-&nbsp;         }
+          }
 
-&nbsp;       }
+        }
 
-&nbsp;     ]
+      ]
 
-&nbsp;   }
+    }
 
-&nbsp; ]
+  ]
 
 }
 
@@ -136,7 +136,7 @@ Simplified but realistic structure:
 
 
 
-📌 1.4 State Drift Detection
+📌 1.4 STATE DRIFT DETECTION
 
 Terraform हमेशा real infra और state बीच diff करता है:
 
@@ -242,19 +242,19 @@ Remote backend solves:
 
 terraform {
 
-&nbsp; backend "s3" {
+  backend "s3" {
 
-&nbsp;   bucket         = "prod-terraform-state"
+    bucket         = "prod-terraform-state"
 
-&nbsp;   key            = "network/vpc/terraform.tfstate"
+    key            = "network/vpc/terraform.tfstate"
 
-&nbsp;   region         = "ap-south-1"
+    region         = "ap-south-1"
 
-&nbsp;   dynamodb\_table = "terraform-locks"
+    dynamodb\_table = "terraform-locks"
 
-&nbsp;   encrypt        = true
+    encrypt        = true
 
-&nbsp; }
+  }
 
 }
 
@@ -282,7 +282,7 @@ Explanation:---------->
 
 ⚡---> How Remote Backend Actually Works Internally
 
-&nbsp;           This is Pro-level understanding:
+            This is Pro-level understanding:
 
 
 
@@ -290,35 +290,35 @@ Explanation:---------->
 
 1️⃣ When you run terraform init
 
-&nbsp;     Terraform backend से connection establish करता है
+      Terraform backend से connection establish करता है
 
-&nbsp;     Current local state को remote backend में migrate करता है
+      Current local state को remote backend में migrate करता है
 
 
 
 2️⃣ When you run terraform plan
 
-&nbsp;     Terraform:
+      Terraform:
 
-&nbsp;     backend से latest state download करता है (in-memory copy only)
+      backend से latest state download करता है (in-memory copy only)
 
-&nbsp;     diff calculate करता है
+      diff calculate करता है
 
-&nbsp;     backend पर कोई writing नहीं होती
+      backend पर कोई writing नहीं होती
 
 
 
 3️⃣ When you run terraform apply
 
-&nbsp;----> Apply से पहले backend पर Lock request जाता है
+ ----> Apply से पहले backend पर Lock request जाता है
 
-&nbsp;     Dynamodb/S3/Consul lock create होता है
+      Dynamodb/S3/Consul lock create होता है
 
-&nbsp;     Changes apply होते हैं
+      Changes apply होते हैं
 
-&nbsp;    New state backend पर upload होता है
+     New state backend पर upload होता है
 
-&nbsp;    Lock release होता है
+     Lock release होता है
 
 
 
@@ -328,17 +328,17 @@ Explanation:---------->
 
 -------->अगर दो टीम मेंबर एक साथ run करें:
 
-&nbsp;           User A → terraform apply
+            User A → terraform apply
 
-&nbsp;           User B → terraform destroy
+            User B → terraform destroy
 
-&nbsp;		=> State corruption
+ 		=> State corruption
 
-&nbsp;		=> Infra inconsistency
+ 		=> Infra inconsistency
 
-&nbsp;		=> Possible production outage
+ 		=> Possible production outage
 
-&nbsp;         इसलिए state locking mandatory है।
+          इसलिए state locking mandatory है।
 
 
 
@@ -346,37 +346,37 @@ Explanation:---------->
 
 🔥  How Locking Works Internally
 
-&nbsp;          Terraform lock file को represent नहीं करता — यह backend layer पर implement होता है:
+           Terraform lock file को represent नहीं करता — यह backend layer पर implement होता है:
 
-&nbsp;   ✔ Local
+    ✔ Local
 
-&nbsp;	Creates: .terraform.tfstate.lock.info	
+ 	Creates: .terraform.tfstate.lock.info	
 
-&nbsp;	File-level lock – unreliable.
+ 	File-level lock – unreliable.
 
 
 
-&nbsp;  ✔ S3 + DynamoDB
+   ✔ S3 + DynamoDB
 
-&nbsp;        DynamoDB row example:
+         DynamoDB row example:
 
 
 
 {
 
-&nbsp; "LockID": "s3://prod-terraform-state/network/vpc/terraform.tfstate-md5hash",
+  "LockID": "s3://prod-terraform-state/network/vpc/terraform.tfstate-md5hash",
 
-&nbsp; "Info": {
+  "Info": {
 
-&nbsp;   "operation": "OperationTypeApply",
+    "operation": "OperationTypeApply",
 
-&nbsp;   "who": "vivek@LAPTOP",
+    "who": "vivek@LAPTOP",
 
-&nbsp;   "created": "2025-11-05T10:22:43Z",
+    "created": "2025-11-05T10:22:43Z",
 
-&nbsp;   "path": "network/vpc"
+    "path": "network/vpc"
 
-&nbsp; }
+  }
 
 }
 
@@ -384,11 +384,11 @@ If row exists → lock already held → second user blocked.
 
 ✔ Terraform Cloud
 
-&nbsp;            Uses distributed locking service (similar to Consul locks).
+             Uses distributed locking service (similar to Consul locks).
 
 ✔ Consul
 
-&nbsp;            Uses session-based lock acquisition (like leader election).
+             Uses session-based lock acquisition (like leader election).
 
 
 
@@ -400,15 +400,15 @@ If row exists → lock already held → second user blocked.
 
 Terraform shows:
 
-&nbsp;      Error: Error acquiring the state lock
+       Error: Error acquiring the state lock
 
-&nbsp;      Reason: ConditionalCheckFailedException
+       Reason: ConditionalCheckFailedException
 
-&nbsp;      Lock Info:
+       Lock Info:
 
-&nbsp;             ID: 12345
+              ID: 12345
 
-&nbsp;             Operation: apply
+              Operation: apply
 
 
 
@@ -424,9 +424,9 @@ terraform force-unlock <ID>
 
 🛡  State Lock Timeout
 
-&nbsp;            Some backends support:
+             Some backends support:
 
-&nbsp;            lock\_timeout = "30m"
+             lock\_timeout = "30m"
 
 If lock not available → Terraform retry करता है।
 
@@ -440,11 +440,11 @@ If lock not available → Terraform retry करता है।
 
 ⭐ 1. Always use remote backend with locking
 
-&nbsp;                   S3 + DynamoDB
+                    S3 + DynamoDB
 
-&nbsp;                   GCS + locking
+                    GCS + locking
 
-&nbsp;                   Azure Blob + lease locking
+                    Azure Blob + lease locking
 
 
 
@@ -452,23 +452,23 @@ If lock not available → Terraform retry करता है।
 
 ⭐ 3. Enable bucket versioning
 
-&nbsp;                Old state restore हो जाता है.
+                 Old state restore हो जाता है.
 
 ⭐ 4. Enable bucket encryption
 
-&nbsp;                 Secrets safe.
+                  Secrets safe.
 
 ⭐ 5. Use separate state per environment
 
-&nbsp;                  dev/state
+                   dev/state
 
-&nbsp;		   qa/state
+ 		   qa/state
 
-&nbsp;		   prod/state
+ 		   prod/state
 
 ⭐ 6. Use separate state per component
 
-&nbsp;                 Avoid blast radius.
+                  Avoid blast radius.
 
 
 
