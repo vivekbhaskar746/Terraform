@@ -64,6 +64,22 @@ Terraform default में secret fields भी store करता है (क�
 
 
 
+---------------------------------------------------------------------------------------------------------------------------------------
+#some state commands
+
+terraform state mv aws_instance.example module.web.aws_instance.server
+terraform state rm aws_s3_bucket.old_bucket  {doesnot remove from aws but remove from state file}
+terraform state list
+terraform state show aws_instance.example
+
+
+
+#workspace
+terraform workspace new dev
+terraform workspace new prod
+terraform workspace select dev
+terraform apply
+
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------
