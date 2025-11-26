@@ -57,3 +57,4 @@ resource "aws_eks_cluster" "example_eks" {
     subnet_ids = ["subnet-12345678", "subnet-87654321"]        # Replace with your subnets
   }
 }
+
