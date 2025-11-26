@@ -1,5 +1,12 @@
 Terraform
 
+C.A.S.E – Code, Automate, Scale, Eliminate manual work”
+
+C → Code infrastructure instead of manual setup.
+A → Automate deployments across clouds.
+S → Scale easily with scripts and templates.
+E → Eliminate human error and inconsistencies.
+
 Quick Answer:
 Terraform is an Infrastructure as Code (IaC) tool that lets you define, provision, and manage infrastructure using simple configuration files. It works by writing code in HCL (HashiCorp Configuration Language), running terraform plan to preview changes, and terraform apply to execute them. In interviews, expect questions on Terraform basics, workflow, state management, providers, and modules
 
@@ -37,3 +44,4 @@ Terraform uses a declarative approach: you describe the desired state, and Terra
 - Execution Plan: Shows what Terraform will do before making changes.
 - State Management: Ensures Terraform knows the current status of resources.
 - Provisioners: Allow running scripts on resources after creation.
+
