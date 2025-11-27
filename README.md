@@ -17,3 +17,8 @@ practice commands like
 
 # Read stateFile, remote-backend, state-locking
 
+# implicit-dependecies
+# dynamic blocks {dynamic keyword and  cntent block}
+# for_each
+# count
+
